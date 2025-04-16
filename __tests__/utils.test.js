@@ -1,5 +1,6 @@
 const {
-  convertTimestampToDate
+  convertTimestampToDate,
+  createRef
 } = require("../db/seeds/utils");
 
 describe("convertTimestampToDate", () => {
@@ -37,4 +38,74 @@ describe("convertTimestampToDate", () => {
     expect(result).toEqual(expected);
   });
 });
+describe("createRef", () => {
+  test("returns empty object when given empty array", ()=>{
+    const input = []
+    const result = createRef(input)
+    expect(result).toEqual({})
+  })
+  test("array of one object returns object with title and id", () =>{
+    const input = [{
+      article_id: 12,
+      title: 'Moustache',
+      topic: 'mitch',
+      author: 'butter_bridge',
+      body: 'Have you seen the size of that thing?',
+      created_at: '2020-10-11T11:24:00.000Z',
+      votes: 0,
+      article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700'
+    }]
+    const result = createRef(input)
+    expect(result).toEqual({"Moustache": 12})
+  })
+  test("array of multiple objects returns object with titles and id's", () =>{
+    const input = [{
+      article_id: 12,
+      title: 'Moustache',
+      topic: 'mitch',
+      author: 'butter_bridge',
+      body: 'Have you seen the size of that thing?',
+      created_at: '2020-10-11T11:24:00.000Z',
+      votes: 0,
+      article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700'
+    },
+    {
+      article_id: 13,
+      title: 'Another article about Mitch',
+      topic: 'mitch',
+      author: 'butter_bridge',
+      body: 'There will never be enough articles about Mitch!',
+      created_at: '2020-10-11T11:24:00.000Z',
+      votes: 0,
+      article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700'
+    }]
+    const result = createRef(input)
+    expect(result).toEqual({"Moustache": 12,
+      "Another article about Mitch": 13
+    })
+  })
+  test("test for mutation", ()=>{
+    const input = [{
+      article_id: 12,
+      title: 'Moustache',
+      topic: 'mitch',
+      author: 'butter_bridge',
+      body: 'Have you seen the size of that thing?',
+      created_at: '2020-10-11T11:24:00.000Z',
+      votes: 0,
+      article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700'
+    }]
+    createRef(input)
+    expect(input).toEqual([{
+      article_id: 12,
+      title: 'Moustache',
+      topic: 'mitch',
+      author: 'butter_bridge',
+      body: 'Have you seen the size of that thing?',
+      created_at: '2020-10-11T11:24:00.000Z',
+      votes: 0,
+      article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700'
+    }])
+  })
 
+})
