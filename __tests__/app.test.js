@@ -23,3 +23,40 @@ describe("GET /api", () => {
       });
   });
 });
+describe("GET /api/topics", () => {
+  test("200: responds with an array containing all topics objects", () => {
+    return request(app)
+      .get("/api/topics")
+      .expect(200)
+      .then((response) => {
+        //console.log(response.body, "body for api/topics")
+        expect(response.body).toEqual([
+          {
+            description: 'The man, the Mitch, the legend',
+            slug: 'mitch',
+            img_url: ""
+          },
+          {
+            description: 'Not dogs',
+            slug: 'cats',
+            img_url: ""
+          },
+          {
+            description: 'what books are made of',
+            slug: 'paper',
+            img_url: ""
+          }
+        ])
+      })
+  })
+})
+describe("Error Handling", () => {
+  test("404: accessing a non-existant route", () => {
+    return request(app)
+    .get("/api/anothertopic")
+    .expect(404)
+    .then((response) => {
+      expect(response.body).toEqual({msg: "Error Not Found"})
+    })
+  })
+})
