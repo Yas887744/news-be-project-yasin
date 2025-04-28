@@ -592,7 +592,8 @@ describe('data insertion', () => {
         expect(comment).toHaveProperty('article_id');
         expect(comment).toHaveProperty('author');
         expect(comment).toHaveProperty('votes');
-        expect(comment).toHaveProperty('created_at');
+        expect(comment).toHaveProperty('created_at')
+        expect(typeof comment.article_id).toBe("number");
       });
     });
   });
