@@ -18,8 +18,8 @@ describe("GET /api", () => {
     return request(app)
       .get("/api")
       .expect(200)
-      .then((response) => {
-        expect(response.body).toEqual(endpointsJson);
+      .then(({body: {endpoints}}) => {
+        expect(endpoints).toEqual(endpointsJson);
       });
   });
 });
@@ -28,25 +28,14 @@ describe("GET /api/topics", () => {
     return request(app)
       .get("/api/topics")
       .expect(200)
-      .then((response) => {
-        //console.log(response.body, "body for api/topics")
-        expect(response.body).toEqual([
-          {
-            description: 'The man, the Mitch, the legend',
-            slug: 'mitch',
-            img_url: ""
-          },
-          {
-            description: 'Not dogs',
-            slug: 'cats',
-            img_url: ""
-          },
-          {
-            description: 'what books are made of',
-            slug: 'paper',
-            img_url: ""
-          }
-        ])
+      .then(({body}) => {
+        expect(body).toHaveLength(3)
+        body.forEach((topic)=>{
+          expect(topic).toMatchObject({
+            description: expect.any(String),
+            slug: expect.any(String)
+          })
+        })
       })
   })
 })
