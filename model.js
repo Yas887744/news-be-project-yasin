@@ -62,3 +62,7 @@ exports.updateArticle = (id, votes) => {
         return rows[0]
     })
 }
+exports.deleteFromComments = (id) => {
+    return db
+    .query("DELETE FROM comments WHERE comment_id = $1", [id])
+}

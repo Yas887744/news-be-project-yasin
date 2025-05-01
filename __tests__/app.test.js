@@ -244,3 +244,30 @@ describe("PATCH /api/articles/:article_id", () => {
     })
   })
 })
+describe("DELETE /api/comments/:comment_id", () => {
+  test("204: deletes comment by id and returns no content", () => {
+    return db.query("INSERT INTO comments (article_id, body, author) VALUES (2, 'wow', 'icellusedkars') RETURNING *;")
+    .then(()=>{
+      return request(app)
+      .delete("/api/comments/19")
+      .expect(204)
+    })
+    .then(()=>{
+      return db.query("SELECT * FROM comments WHERE comment_id = 19")
+      .then(({rows})=>{
+        expect(rows).toEqual([])
+      })
+    })
+  })
+  test.skip("404: When passed an comment_id that doesn't exist", () => {
+    return db.query("INSERT INTO comments (article_id, body, author) VALUES (2, 'wow', 'icellusedkars') RETURNING *;")
+    .then(()=>{
+      return request(app)
+      .delete("/api/comments/1000")
+      .expect(404)
+      .then(({body}) => {
+        expect(body).toEqual({msg: "No comment found under comment_id: 1000"})
+      })
+    })
+  })
+})
