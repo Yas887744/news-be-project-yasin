@@ -51,8 +51,12 @@ exports.postComment = (req, res, next) => {
 exports.patchArticle = (req, res, next) => {
     const {article_id} = req.params
     const {inc_votes} = req.body
-    return updateArticle(article_id, inc_votes).then((article)=>{
-        res.status(200).send({article})
+    return selectArticleById(article_id).then(() => {
+        return updateArticle(article_id, inc_votes).then((article)=>{
+            res.status(200).send({article})
+        })
     })
-    
+    .catch((err) => {
+        next(err)
+    })
 }

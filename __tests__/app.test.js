@@ -193,7 +193,7 @@ describe("POST /api/articles/:article_id/comments", () => {
     .send({username: "icellusedkars"})
     .expect(400)
     .then(({body}) => {
-      expect(body).toEqual({msg: "Invalid: No comment input"})
+      expect(body).toEqual({msg: "Invalid: No input"})
     })
   })
   test("400: invalid username (no username supplied)", () => {
@@ -214,6 +214,33 @@ describe("PATCH /api/articles/:article_id", () => {
     .expect(200)
     .then(({body}) => {
       expect(body.article.votes).toBe(110)
+    })
+  })
+  test("404: when article_id is invalid", () => {
+    return request(app)
+    .patch("/api/articles/1000")
+    .send({ inc_votes : 10 })
+    .expect(404)
+    .then(({body}) => {
+      expect(body).toEqual({msg: "No article found under article_id: 1000"})
+    })
+  })
+  test("400: invalid input", () => {
+    return request(app)
+    .patch("/api/articles/1")
+    .send({})
+    .expect(400)
+    .then(({body}) => {
+      expect(body).toEqual({msg: "Invalid: No input"})
+    })
+  })
+  test("400: invalid input", () => {
+    return request(app)
+    .patch("/api/articles/1")
+    .send({inc_votes: "ten"})
+    .expect(400)
+    .then(({body}) => {
+      expect(body).toEqual({msg: "Invalid input"})
     })
   })
 })

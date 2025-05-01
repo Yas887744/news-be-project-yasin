@@ -37,7 +37,7 @@ app.use((err, req, res, next) => {
 })
 app.use((err, req, res, next) => {
     if(err.code === "23502"){
-        res.status(400).send({msg: "Invalid: No comment input"})
+        res.status(400).send({msg: "Invalid: No input"})
     }else{
         next(err)
     }
