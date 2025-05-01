@@ -127,12 +127,20 @@ describe("GET /api/articles/:article_id/comments", () => {
       expect(body.comments).toBeSortedBy('created_at',{descending: true})
     })
   })
-  test("404: When passed an article_id and no comments are found", () => {
+  test("404: When passed an article_id that doesn't exist", () => {
     return request(app)
     .get("/api/articles/1000/comments")
     .expect(404)
     .then(({body}) => {
-      expect(body).toEqual({msg: "No comments found for article_id: 1000"})
+      expect(body).toEqual({msg: "No article found under article_id: 1000"})
+    })
+  })
+  test("404: When passed an article_id and no comments are found", () => {
+    return request(app)
+    .get("/api/articles/2/comments")
+    .expect(404)
+    .then(({body}) => {
+      expect(body).toEqual({msg: "No comments found for article_id: 2"})
     })
   })
   test("400: invalid article_id input", () => {

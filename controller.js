@@ -26,10 +26,13 @@ exports.getArticles = (req, res, next) => {
 }
 exports.getComments = (req, res, next) => {
     const {article_id} = req.params
-    return selectComments(article_id).then((comments) => {
-        res.status(200).send({comments})
+    return selectArticleById(article_id).then(() => {
+        return selectComments(article_id).then((comments) => {
+            if(comments.length === 0){
+                res.status(404).send({msg: `No comments found for article_id: ${article_id}`})
+            }
+            res.status(200).send({comments})
+        })
     })
-    .catch((err)=>{
-        next(err)
-    })
+    .catch((err)=>{next(err)})
 }
