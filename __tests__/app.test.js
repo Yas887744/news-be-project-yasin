@@ -259,5 +259,15 @@ describe("DELETE /api/comments/:comment_id", () => {
       })
     })
   })
-  
+  test.skip("404: When passed an comment_id that doesn't exist", () => {
+    return db.query("INSERT INTO comments (article_id, body, author) VALUES (2, 'wow', 'icellusedkars') RETURNING *;")
+    .then(()=>{
+      return request(app)
+      .delete("/api/comments/1000")
+      .expect(404)
+      .then(({body}) => {
+        expect(body).toEqual({msg: "No comment found under comment_id: 1000"})
+      })
+    })
+  })
 })

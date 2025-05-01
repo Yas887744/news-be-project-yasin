@@ -65,5 +65,8 @@ exports.deleteComment = (req, res, next) => {
     return deleteFromComments(comment_id).then(()=>{
         res.status(204).send()
     })
+    .catch((err)=>{
+        next(err)
+    })
 
 }
