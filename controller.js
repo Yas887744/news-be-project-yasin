@@ -1,5 +1,5 @@
 const endpoints = require('./endpoints.json')
-const {selectTopics, selectArticleById, selectArticles, selectComments} = require('./model')
+const {selectTopics, selectArticleById, selectArticles, selectComments, insertComment} = require('./model')
 
 
 exports.getApi = (req, res) => {
@@ -26,8 +26,23 @@ exports.getArticles = (req, res, next) => {
 }
 exports.getComments = (req, res, next) => {
     const {article_id} = req.params
-    return selectComments(article_id).then((comments) => {
-        res.status(200).send({comments})
+    return selectArticleById(article_id).then(() => {
+        return selectComments(article_id).then((comments) => {
+            if(comments.length === 0){
+                res.status(404).send({msg: `No comments found for article_id: ${article_id}`})
+            }
+            res.status(200).send({comments})
+        })
+    })
+    .catch((err)=>{next(err)})
+}
+exports.postComment = (req, res, next) => {
+    const {article_id} = req.params
+    const {username, body} = req.body
+    return selectArticleById(article_id).then(() => {
+        return insertComment(article_id, username, body).then((comment)=>{
+            res.status(201).send({comment})
+        })
     })
     .catch((err)=>{
         next(err)

@@ -37,15 +37,21 @@ exports.selectArticles = () => {
 }
 exports.selectComments = (id) => {
     return db
-    .query(`SELECT * FROM comments WHERE article_id = $1
-        ORDER BY created_at DESC`, [id])
+    .query(`SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at DESC`, [id])
     .then(({rows}) => {
-        if(rows.length === 0){
+        return rows
+    })
+}
+exports.insertComment = (id, author, body) => {
+    return db
+    .query(`INSERT INTO comments(article_id, body, author) VALUES($1, $2, $3) RETURNING *;`, [id, body, author])
+    .then(({rows}) => {
+        if(rows[0].author === null){
             return Promise.reject({
-                status: 404,
-                msg: `No comments found for article_id: ${id}`
+                status: 400,
+                msg: "Username invalid no username given"
             })
         }
-        return rows
+        return rows[0]
     })
 }
