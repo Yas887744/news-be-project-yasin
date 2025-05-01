@@ -43,7 +43,7 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
       article_id INT REFERENCES articles(article_id),
       body TEXT NOT NULL,
       votes INT DEFAULT 0 NOT NULL,
-      author VARCHAR(250) REFERENCES users(username),
+      author VARCHAR(250) REFERENCES users(username) NOT NULL,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);`) 
     })
     .then(() => {

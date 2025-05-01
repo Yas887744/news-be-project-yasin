@@ -202,7 +202,7 @@ describe("POST /api/articles/:article_id/comments", () => {
     .send({body: "this is the best thing I've read"})
     .expect(400)
     .then(({body}) => {
-      expect(body).toEqual({msg: "Username invalid no username given"})
+      expect(body).toEqual({msg: "Invalid: No input"})
     })
   })
 })
@@ -259,7 +259,7 @@ describe("DELETE /api/comments/:comment_id", () => {
       })
     })
   })
-  test.skip("404: When passed an comment_id that doesn't exist", () => {
+  test("404: When passed an comment_id that doesn't exist", () => {
     return db.query("INSERT INTO comments (article_id, body, author) VALUES (2, 'wow', 'icellusedkars') RETURNING *;")
     .then(()=>{
       return request(app)
@@ -270,4 +270,33 @@ describe("DELETE /api/comments/:comment_id", () => {
       })
     })
   })
+  test("400: When passed an comment_id that is invalid", () => {
+    return db.query("INSERT INTO comments (article_id, body, author) VALUES (2, 'wow', 'icellusedkars') RETURNING *;")
+    .then(()=>{
+      return request(app)
+      .delete("/api/comments/seven")
+      .expect(400)
+      .then(({body}) => {
+        expect(body).toEqual({msg: "Invalid input"})
+      })
+    })
+  })
 })
+describe("GET /api/users", () => {
+  test("200: responds with array of article objects", () => {
+    return request(app)
+    .get("/api/users")
+    .expect(200)
+    .then(({body}) => {
+      expect(body.users).toHaveLength(4)
+      body.users.forEach((user) => {
+        expect(user).toMatchObject({
+          username: expect.any(String),
+          name: expect.any(String),
+          avatar_url: expect.any(String)
+        })
+      })
+    })
+  })
+})
+

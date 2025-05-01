@@ -46,12 +46,6 @@ exports.insertComment = (id, author, body) => {
     return db
     .query(`INSERT INTO comments(article_id, body, author) VALUES($1, $2, $3) RETURNING *;`, [id, body, author])
     .then(({rows}) => {
-        if(rows[0].author === null){
-            return Promise.reject({
-                status: 400,
-                msg: "Username invalid no username given"
-            })
-        }
         return rows[0]
     })
 }
@@ -65,4 +59,19 @@ exports.updateArticle = (id, votes) => {
 exports.deleteFromComments = (id) => {
     return db
     .query("DELETE FROM comments WHERE comment_id = $1", [id])
+    .then(({rowCount})=>{
+       if(rowCount===0){
+        return Promise.reject({
+            status: 404,
+            msg: `No comment found under comment_id: ${id}`
+        })
+       }
+    })
+}
+exports.selectUsers = () => {
+    return db
+    .query("SELECT * FROM users")
+    .then(({rows})=>{
+        return rows
+    })
 }
