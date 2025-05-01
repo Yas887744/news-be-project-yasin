@@ -206,3 +206,14 @@ describe("POST /api/articles/:article_id/comments", () => {
     })
   })
 })
+describe("PATCH /api/articles/:article_id", () => {
+  test("200: responds with updated article", () => {
+    return request(app)
+    .patch("/api/articles/1")
+    .send({ inc_votes : 10 })
+    .expect(200)
+    .then(({body}) => {
+      expect(body.article.votes).toBe(110)
+    })
+  })
+})
