@@ -270,4 +270,17 @@ describe("DELETE /api/comments/:comment_id", () => {
       })
     })
   })
+  test("400: When passed an comment_id that is invalid", () => {
+    return db.query("INSERT INTO comments (article_id, body, author) VALUES (2, 'wow', 'icellusedkars') RETURNING *;")
+    .then(()=>{
+      return request(app)
+      .delete("/api/comments/seven")
+      .expect(400)
+      .then(({body}) => {
+        expect(body).toEqual({msg: "Invalid input"})
+      })
+    })
+  })
+
 })
+
