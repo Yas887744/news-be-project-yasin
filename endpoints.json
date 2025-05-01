@@ -61,5 +61,31 @@
         }
       ]
     }
+  },
+  "POST /api/articles/2/comments": {
+    "description": "posts a new comment for a given article id",
+    "exampleResponse": {"comment": {
+      "comment_id": 19,
+      "article_id": 2,
+      "body": "this is the best thing I've read",
+      "votes": 0,
+      "author": "icellusedkars",
+      "created_at": "2025-05-01T09:29:10.876Z"}
+    }
+  },
+  "PATCH /api/articles/1": {
+    "description": "updates the amount of votes and returns updated article",
+    "exampleResponse": {
+      "article": {
+        "article_id": 1,
+        "title": "Living in the shadow of a great man",
+        "topic": "mitch",
+        "author": "butter_bridge",
+        "body": "I find this existence challenging",
+        "created_at": "2020-07-09T20:11:00.000Z",
+        "votes": 110,
+        "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+      }
+    }
   }
 }
