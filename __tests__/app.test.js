@@ -152,3 +152,57 @@ describe("GET /api/articles/:article_id/comments", () => {
     })
   })
 })
+describe("POST /api/articles/:article_id/comments", () => {
+  test("201: responds with posted comment", () => {
+    return request(app)
+    .post("/api/articles/2/comments")
+    .send({username: "icellusedkars", body: "this is the best thing I've read"})
+    .expect(201)
+    .then(({body}) => {
+      expect(body.comment).toEqual({
+        comment_id: expect.any(Number),
+        article_id: 2,
+        body: "this is the best thing I've read",
+        votes: expect.any(Number),
+        author: "icellusedkars",
+        created_at: expect.any(String)
+      })
+    })
+  })
+  test("404: when article_id is invalid", () => {
+    return request(app)
+    .post("/api/articles/1000/comments")
+    .send({username: "icellusedkars", body: "this is the best thing I've read"})
+    .expect(404)
+    .then(({body}) => {
+      expect(body).toEqual({msg: "No article found under article_id: 1000"})
+    })
+  })
+  test("400: invalid username", () => {
+    return request(app)
+    .post("/api/articles/2/comments")
+    .send({username: "bestcoder", body: "this is the best thing I've read"})
+    .expect(400)
+    .then(({body}) => {
+      expect(body).toEqual({msg: "Username invalid"})
+    })
+  })
+  test("400: invalid comment", () => {
+    return request(app)
+    .post("/api/articles/2/comments")
+    .send({username: "icellusedkars"})
+    .expect(400)
+    .then(({body}) => {
+      expect(body).toEqual({msg: "Invalid: No comment input"})
+    })
+  })
+  test("400: invalid username (no username supplied)", () => {
+    return request(app)
+    .post("/api/articles/2/comments")
+    .send({body: "this is the best thing I've read"})
+    .expect(400)
+    .then(({body}) => {
+      expect(body).toEqual({msg: "Username invalid no username given"})
+    })
+  })
+})
