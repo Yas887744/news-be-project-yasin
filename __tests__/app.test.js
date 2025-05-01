@@ -202,7 +202,7 @@ describe("POST /api/articles/:article_id/comments", () => {
     .send({body: "this is the best thing I've read"})
     .expect(400)
     .then(({body}) => {
-      expect(body).toEqual({msg: "Username invalid no username given"})
+      expect(body).toEqual({msg: "Invalid: No input"})
     })
   })
 })

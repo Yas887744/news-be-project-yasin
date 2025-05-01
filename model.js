@@ -46,12 +46,6 @@ exports.insertComment = (id, author, body) => {
     return db
     .query(`INSERT INTO comments(article_id, body, author) VALUES($1, $2, $3) RETURNING *;`, [id, body, author])
     .then(({rows}) => {
-        if(rows[0].author === null){
-            return Promise.reject({
-                status: 400,
-                msg: "Username invalid no username given"
-            })
-        }
         return rows[0]
     })
 }
