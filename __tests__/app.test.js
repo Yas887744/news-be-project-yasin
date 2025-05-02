@@ -299,7 +299,7 @@ describe("GET /api/users", () => {
     })
   })
 })
-describe("GET /api/articles?sort_by=&order=", () => {
+describe("GET /api/articles?sort_by=<>&order=<>", () => {
   test("200: responds with correct order by sort query", () => {
     return request(app)
     .get("/api/articles?sort_by=title&order=asc")
@@ -322,6 +322,27 @@ describe("GET /api/articles?sort_by=&order=", () => {
     .expect(400)
     .then(({body}) => {
       expect(body).toEqual({msg: "Invalid input"})
+    })
+  })
+})
+describe("GET /api/articles?topic=<>", () => {
+  test("200: responds with all the topics queried", () => {
+    return request(app)
+    .get("/api/articles?topic=mitch")
+    .expect(200)
+    .then(({body}) => {
+      expect(body.articles).toHaveLength(12)
+      body.articles.forEach((article)=>{
+        expect(article.topic).toBe("mitch")
+      })
+    })
+  })
+  test("404: When passed a topic query that doesn't exist on articles table", () => {
+    return request(app)
+    .get("/api/articles?topic=dogs")
+    .expect(404)
+    .then(({body}) => {
+      expect(body).toEqual({msg: "No topic found for dogs"})
     })
   })
 })
