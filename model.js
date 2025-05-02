@@ -20,7 +20,7 @@ exports.selectArticleById = (id) => {
         return rows[0]
     })
 } 
-exports.selectArticles = (sort = "created_at", order = "DESC") => {
+exports.selectArticles = (sort = "created_at", order = "DESC", topic) => {
     const allowedInputsSort = ["title", "topic", "author", "body", "created_at", "votes", "article_img_url"]
     const allowedInputsOrder = ["ASC", "DESC", "asc", "desc"]
     if(!allowedInputsSort.includes(sort) || !allowedInputsOrder.includes(order)){
@@ -29,16 +29,30 @@ exports.selectArticles = (sort = "created_at", order = "DESC") => {
 			msg: "Invalid input"
 		})
 	}
-    return db
-    .query(`SELECT articles.article_id, articles.title, 
+    const query = `SELECT articles.article_id, articles.title, 
         articles.topic, articles.author, 
         articles.created_at, articles.votes, 
         articles.article_img_url, 
         COUNT(comments.article_id) AS comment_count
-        FROM articles
-        LEFT JOIN comments ON articles.article_id = comments.article_id
-        GROUP BY articles.article_id
-        ORDER BY ${sort} ${order}`)
+        FROM articles`
+    
+    const condition = ` LEFT JOIN comments ON articles.article_id = comments.article_id`
+    const topicQuery = ` WHERE topic = $1` 
+    const sortOrderQuery = ` GROUP BY articles.article_id ORDER BY ${sort} ${order}`
+    if(topic){
+        return db
+        .query(query + condition + topicQuery + sortOrderQuery, [topic])
+        .then(({rows}) => {
+            if(rows.length === 0){
+                return Promise.reject({
+                    status: 404,
+                    msg: `No topic found for ${topic}`
+                })
+            }
+            return rows
+        })
+    }
+    return db.query(query + condition + sortOrderQuery)
     .then(({rows}) => {
         return rows
     })

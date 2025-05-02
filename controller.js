@@ -20,9 +20,13 @@ exports.getArticleById = (req, res, next) => {
     })
 }
 exports.getArticles = (req, res, next) => {
-    const {sort_by, order} = req.query
-    return selectArticles(sort_by, order).then((articles) => {
+    const {sort_by, order, topic} = req.query
+    return selectArticles(sort_by, order, topic).then((articles) => {
         res.status(200).send({articles})
+    })
+    .catch((err)=>{
+        console.log(err)
+        next(err)
     })
 }
 exports.getComments = (req, res, next) => {
