@@ -331,7 +331,6 @@ describe("GET /api/articles?topic=<>", () => {
     .get("/api/articles?topic=mitch")
     .expect(200)
     .then(({body}) => {
-      console.log(body, ">>>>>body in test")
       expect(body.articles).toHaveLength(12)
       body.articles.forEach((article)=>{
         expect(article.topic).toBe("mitch")
