@@ -20,7 +20,15 @@ exports.selectArticleById = (id) => {
         return rows[0]
     })
 } 
-exports.selectArticles = () => {
+exports.selectArticles = (sort = "created_at", order = "DESC") => {
+    const allowedInputsSort = ["title", "topic", "author", "body", "created_at", "votes", "article_img_url"]
+    const allowedInputsOrder = ["ASC", "DESC", "asc", "desc"]
+    if(!allowedInputsSort.includes(sort) || !allowedInputsOrder.includes(order)){
+		return Promise.reject({
+			status : 400,
+			msg: "Invalid input"
+		})
+	}
     return db
     .query(`SELECT articles.article_id, articles.title, 
         articles.topic, articles.author, 
@@ -30,7 +38,7 @@ exports.selectArticles = () => {
         FROM articles
         LEFT JOIN comments ON articles.article_id = comments.article_id
         GROUP BY articles.article_id
-        ORDER BY created_at DESC`)
+        ORDER BY ${sort} ${order}`)
     .then(({rows}) => {
         return rows
     })
