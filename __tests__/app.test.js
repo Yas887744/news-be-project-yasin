@@ -299,4 +299,29 @@ describe("GET /api/users", () => {
     })
   })
 })
-
+describe("GET /api/articles?sort_by=&order=", () => {
+  test("200: responds with correct order by sort query", () => {
+    return request(app)
+    .get("/api/articles?sort_by=title&order=asc")
+    .expect(200)
+    .then(({body}) => {
+      expect(body.articles).toBeSortedBy('title', {ascending: true})
+    })
+  })
+  test("400: When passed a query that is invalid for sort by", () => {
+    return request(app)
+    .get("/api/articles?sort_by=hello")
+    .expect(400)
+    .then(({body}) => {
+      expect(body).toEqual({msg: "Invalid input"})
+    })
+  })
+  test("400: When passed a query that is invalid for order", () => {
+    return request(app)
+    .get("/api/articles?order=highest")
+    .expect(400)
+    .then(({body}) => {
+      expect(body).toEqual({msg: "Invalid input"})
+    })
+  })
+})
