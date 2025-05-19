@@ -12,6 +12,7 @@ const {
   deleteComment,
   getUsers,
 } = require("./controller");
+app.use(cors());
 app.use(express.json());
 
 app.get("/api", getApi);
@@ -24,7 +25,6 @@ app.patch("/api/articles/:article_id", patchArticle);
 app.delete("/api/comments/:comment_id", deleteComment);
 app.get("/api/users", getUsers);
 
-app.use(cors());
 app.use((err, req, res, next) => {
   if (err.status && err.msg) {
     res.status(err.status).send({ msg: err.msg });
