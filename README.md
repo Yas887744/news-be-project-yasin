@@ -2,7 +2,9 @@
 
 ## Hosted Link
 
-https://news-be-project-yasin.onrender.com
+https://news-be-project-yasin.onrender.com/api
+
+This link will show you a JSON object of all available endpoints.
 
 ## Backend Project Summary
 
